@@ -7,15 +7,15 @@ import socket
 import time
 import math
 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.connect(('localhost', 30003))
+# s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+# s.connect(('localhost', 30003))
 aircraft_data={}
 
 class MyApp(App):
     def build(self):
         self.update_counter = 0  # Add a counter variable
         self.radar = Radar()
-        Clock.schedule_interval(self.update_label, 1.0)  # Update every second
+        # Clock.schedule_interval(self.update_label, 1.0)  # Update every second
         #self.update_label()
         return self.radar
     
@@ -68,34 +68,44 @@ class MyApp(App):
         self.cleanup_flights()
         print(aircraft_data)
         
-class Radar(Widget):
-    def __init__(self, **kwargs):
-        super(Radar, self).__init__(**kwargs)
-        self.angle = 0
+class RadarLine(Widget):
+    def __init__(self, center, radius, angle=0, opacity=1, **kwargs):
+        super(RadarLine, self).__init__(**kwargs)
+        self.center = center
+        self.radius = radius
+        self.angle = angle
+        self.opacity = opacity
 
         with self.canvas:
-            self.color = Color(0, 158, 0)  # white color
-            self.circle = Line(circle=(self.center_x, self.center_y, min(self.width, self.height) / 2), width=2)
-
             PushMatrix()
             self.rot = Rotate()
-            self.line = Line(points=[self.center_x, self.center_y, self.center_x, self.center_y - self.height / 2],
-                             width=2)
+            self.color = Color(0, 1, 0, self.opacity)  # green color with dynamic opacity
+            self.line = Line(points=[self.center[0], self.center[1], self.center[0], self.center[1] - self.radius], width=1)
             PopMatrix()
 
+        Clock.schedule_once(self.start_update, self.angle / 360.)  # start updating after a delay proportional to the initial angle
+
+    def start_update(self, dt):
         Clock.schedule_interval(self.update, 1 / 60.)  # update at 60fps
 
     def update(self, dt):
-        self.angle += 1
-        if self.angle >= 360:
-            self.angle = 0
-
+        self.angle = (self.angle + 1) % 360
         self.rot.angle = self.angle
         self.rot.origin = self.center
+        self.line.points = [self.center[0], self.center[1], self.center[0], self.center[1] - self.radius]
 
-    def on_size(self, *args):
-        self.circle.circle = self.center_x, self.center_y, min(self.width, self.height) / 2
-        self.line.points = [self.center_x, self.center_y, self.center_x, self.center_y - self.height / 2]
+
+class Radar(Widget):
+    def __init__(self, **kwargs):
+        super(Radar, self).__init__(**kwargs)
+        self.padding = 50  # Add padding
+        self.center = self.center_x, self.center_y
+        self.radius = min(self.width - self.padding, self.height - self.padding) / 2
+
+        num_lines = 60  # number of lines
+        for i in range(num_lines):
+            line = RadarLine(self.center, self.radius, angle=i*(360/num_lines), opacity=1 - (i/num_lines))
+            self.add_widget(line)
 
 
 if __name__ == '__main__':
