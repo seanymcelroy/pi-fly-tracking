@@ -1,8 +1,11 @@
 from kivy.app import App
 from kivy.uix.label import Label
+from kivy.uix.widget import Widget
+from kivy.graphics import Color, Line, PushMatrix, PopMatrix, Rotate
 from kivy.clock import Clock
 import socket
 import time
+import math
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect(('localhost', 30003))
@@ -10,11 +13,11 @@ aircraft_data={}
 
 class MyApp(App):
     def build(self):
-        self.label = Label(text="")
         self.update_counter = 0  # Add a counter variable
+        self.radar = Radar()
         Clock.schedule_interval(self.update_label, 1.0)  # Update every second
         #self.update_label()
-        return self.label
+        return self.radar
     
     def cleanup_flights(self, timeout=20):
         current_time = time.time()
@@ -34,6 +37,7 @@ class MyApp(App):
 
         # Split the string into a list of strings
         messages = data_string.split('\n')
+        
         # ...
         for line in messages:
             # Split the line into fields
@@ -64,6 +68,34 @@ class MyApp(App):
         self.cleanup_flights()
         print(aircraft_data)
         
+class Radar(Widget):
+    def __init__(self, **kwargs):
+        super(Radar, self).__init__(**kwargs)
+        self.angle = 0
+
+        with self.canvas:
+            self.color = Color(0, 158, 0)  # white color
+            self.circle = Line(circle=(self.center_x, self.center_y, min(self.width, self.height) / 2), width=2)
+
+            PushMatrix()
+            self.rot = Rotate()
+            self.line = Line(points=[self.center_x, self.center_y, self.center_x, self.center_y - self.height / 2],
+                             width=2)
+            PopMatrix()
+
+        Clock.schedule_interval(self.update, 1 / 60.)  # update at 60fps
+
+    def update(self, dt):
+        self.angle += 1
+        if self.angle >= 360:
+            self.angle = 0
+
+        self.rot.angle = self.angle
+        self.rot.origin = self.center
+
+    def on_size(self, *args):
+        self.circle.circle = self.center_x, self.center_y, min(self.width, self.height) / 2
+        self.line.points = [self.center_x, self.center_y, self.center_x, self.center_y - self.height / 2]
 
 
 if __name__ == '__main__':
