@@ -75,24 +75,31 @@ class RadarLine(Widget):
         self.radius = radius
         self.angle = angle
         self.opacity = opacity
+        self.fade_complete = False  # Flag to track fading effect completion
 
         with self.canvas:
             PushMatrix()
             self.rot = Rotate()
-            self.color = Color(0, 1, 0, self.opacity)  # green color with dynamic opacity
+            self.color = Color(0, 1, 0, self.opacity)  # Green color with dynamic opacity
             self.line = Line(points=[self.center[0], self.center[1], self.center[0], self.center[1] - self.radius], width=1)
             PopMatrix()
 
-        Clock.schedule_once(self.start_update, self.angle / 360.)  # start updating after a delay proportional to the initial angle
+        Clock.schedule_once(self.start_update, self.angle / 360.)  # Start updating after a delay proportional to the initial angle
 
     def start_update(self, dt):
-        Clock.schedule_interval(self.update, 1 / 60.)  # update at 60fps
+        Clock.schedule_interval(self.update, 1 / 60.)  # Update at 60fps
 
     def update(self, dt):
         self.angle = (self.angle + 1) % 360
         self.rot.angle = self.angle
         self.rot.origin = self.center
         self.line.points = [self.center[0], self.center[1], self.center[0], self.center[1] - self.radius]
+
+        if self.opacity <= 0:  # Check if opacity has reached 0
+            self.fade_complete = True
+
+        if self.fade_complete:
+            self.parent.remove_widget(self)  # Remove the widget from its parent
 
 
 class Radar(Widget):
@@ -102,10 +109,15 @@ class Radar(Widget):
         self.center = self.center_x, self.center_y
         self.radius = min(self.width - self.padding, self.height - self.padding) / 2
 
-        num_lines = 60  # number of lines
-        for i in range(num_lines):
-            line = RadarLine(self.center, self.radius, angle=i*(360/num_lines), opacity=1 - (i/num_lines))
-            self.add_widget(line)
+        self.line = RadarLine(self.center, self.radius)  # Create a single RadarLine instance
+        self.add_widget(self.line)  # Add the RadarLine instance to the Radar widget
+
+    def on_size(self, *args):
+        self.center = self.center_x, self.center_y
+        self.radius = min(self.width - self.padding, self.height - self.padding) / 2
+        self.line.center = self.center  # Update the center of the RadarLine
+        self.line.radius = self.radius  # Update the radius of the RadarLine
+
 
 
 if __name__ == '__main__':
