@@ -1,56 +1,90 @@
 body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-    background-color: black
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  background-color: black;
+}
+
+.borderzone {
+  width: 800px;
+  height: 800px;
+  background-color: #2d6774;
+  border-radius: 50%;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.expanding-circle {
+  width: 800px;
+  height: 800px;
+  background-color: transparent;
+  border: 10px solid white;
+  border-radius: 50%;
+  animation: growCircle 3s linear infinite;
+  z-index: 2;
+}
+.spinning-line{
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 10px;
+  height: 400px;
+  background-color: white;
+  z-index: 2;
+  transform: translateX(-50%);
+  transform-origin: bottom center;
+  /* animation: spinLine 5s linear infinite, pixelFade 5s infinite; */
+  box-shadow: -5px 0 15px  rgba(255, 0, 0, 0.637), -15px 0 15px  rgba(255, 0, 0, 0.486), -25px -10px 15px  rgba(255, 0, 0, 0.342), -35px -20px 15px  rgba(255, 0, 0, 0.274), -45px -30px 15px  rgba(255, 0, 0, 0.164), -55px 0px 15px  rgba(255, 0, 0, 0.164), -65px 0px 15px  rgba(255, 0, 0, 0.164)
+}
+
+@keyframes spinLine {
+  0% {
+    transform: translateX(-50%) rotate(0deg);
   }
-  
-  .radar-spinner {
-    position: relative;
-    width: 500px;
-    height: 500px;
-    border-radius: 50%;
-    border: 5px solid #ccc;
-    /* animation: rotate 2s linear infinite; */
-    overflow: hidden;
+  100% {
+    transform: translateX(-50%) rotate(360deg);
   }
-  
-  .radar-pie {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    clip-path: polygon(50% 50%, 87% 100%, 50% 100%);
-    background: linear-gradient(to right, 
-    rgba(113, 219, 52, 1) 50%,
-    rgba(113, 219, 52, 0) 51%,
-    rgba(113, 219, 52, 0.1) 51.5%,
-    rgba(113, 219, 52, 0.05) 52%,
-    rgba(113, 219, 52, 0.04) 53%
-    );
-    /* background-color: #71db34; */
-    transform-origin: center;
-    animation: radarPieAnimation 3s linear infinite;
+}
+
+.blinking-point {
+  width: 20px; /* Adjust the size as needed */
+  height: 20px;
+  background-color: transparent;
+  background-color: rgba(255, 0, 0, 0.637); /* Set the border color for the faded shape */
+  border-radius: 10px;
+  position: absolute;
+  top: 20%;
+  left: 40%;
+  transform: translateX(-50%); /* Center it horizontally */
+  animation: blinkPoint 1s linear infinite;
+  z-index: 3;
+}
+
+@keyframes growCircle {
+  0% {
+    transform: scale(0.01); /* Start with a scale of 1 (normal size) */
   }
-  
-  /* @keyframes rotate {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
-  } */
-  
-  @keyframes radarPieAnimation {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
+  50%{
+    opacity: 1;
   }
-  
+  100% {
+    transform: scale(1); /* Grow to double the size */
+    opacity: 0;
+  }
+}
+
+@keyframes blinkPoint {
+  0% {
+    opacity: 0;
+    box-shadow: 0 0 5px rgba(255, 0, 0, 0.637), 0 0 20px rgba(255, 0, 0, 0.637), 0 0 40px rgba(255, 0, 0, 0.637);
+  } 50% {
+    box-shadow: 0 0 5px rgba(255, 0, 0, 0.637), 0 0 30px rgba(255, 0, 0, 0.637), 0 0 60px rgba(255, 0, 0, 0.637); /* Increase the glow */
+  }
+  100% {
+    box-shadow: 0 0 5px rgba(255, 0, 0, 0.637), 0 0 20px rgba(255, 0, 0, 0.637), 0 0 40px rgba(255, 0, 0, 0.637);
+    opacity: 1;
+  }
+}
