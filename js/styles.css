@@ -30,30 +30,32 @@ body {
   position: absolute;
   left: 50%;
   top: 0;
-  width: 10px;
+  width: 2px;
   height: 400px;
-  background-color: white;
+  background-color: rgba(0, 255, 0, 0.664);
+  border-radius: 50%;
   z-index: 2;
   transform: translateX(-50%);
   transform-origin: bottom center;
-  /* animation: spinLine 5s linear infinite, pixelFade 5s infinite; */
-  box-shadow: -5px 0 15px  rgba(255, 0, 0, 0.637), -15px 0 15px  rgba(255, 0, 0, 0.486), -25px -10px 15px  rgba(255, 0, 0, 0.342), -35px -20px 15px  rgba(255, 0, 0, 0.274), -45px -30px 15px  rgba(255, 0, 0, 0.164), -55px 0px 15px  rgba(255, 0, 0, 0.164), -65px 0px 15px  rgba(255, 0, 0, 0.164)
+  animation: spinLine 5s linear infinite, pixelFade 5s infinite;
+  box-shadow: 0 0 10px 2px rgba(0, 255, 0, 0.637), -5px 0 10px 2px rgba(0, 255, 0, 0.637), -15px -10px 10px 2px rgba(0, 255, 0, 0.288);
 }
 
 @keyframes spinLine {
   0% {
     transform: translateX(-50%) rotate(0deg);
+    /* box-shadow: 0 0 5px rgba(0, 255, 0, 0.637), 0 0 20px rgba(0, 255, 0, 0.637), 0 0 40px rgba(0, 255, 0, 0.637); */
   }
   100% {
     transform: translateX(-50%) rotate(360deg);
+    /* box-shadow: 0 0 5px rgba(0, 255, 0, 0.637), 0 0 20px rgba(0, 255, 0, 0.637), 0 0 40px rgba(0, 255, 0, 0.637); */
   }
 }
 
 .blinking-point {
   width: 20px; /* Adjust the size as needed */
   height: 20px;
-  background-color: transparent;
-  background-color: rgba(255, 0, 0, 0.637); /* Set the border color for the faded shape */
+  background-color: rgba(0, 255, 0, 0.637); /* Set the border color for the faded shape */
   border-radius: 10px;
   position: absolute;
   top: 20%;
@@ -79,12 +81,12 @@ body {
 @keyframes blinkPoint {
   0% {
     opacity: 0;
-    box-shadow: 0 0 5px rgba(255, 0, 0, 0.637), 0 0 20px rgba(255, 0, 0, 0.637), 0 0 40px rgba(255, 0, 0, 0.637);
+    box-shadow: 0 0 5px rgba(0, 255, 0, 0.637), 0 0 20px rgba(0, 255, 0, 0.637), 0 0 40px rgba(0, 255, 0, 0.637);
   } 50% {
-    box-shadow: 0 0 5px rgba(255, 0, 0, 0.637), 0 0 30px rgba(255, 0, 0, 0.637), 0 0 60px rgba(255, 0, 0, 0.637); /* Increase the glow */
+    box-shadow: 0 0 5px rgba(0, 255, 0, 0.637), 0 0 30px rgba(0, 255, 0, 0.637), 0 0 60px rgba(0, 255, 0, 0.637); /* Increase the glow */
   }
   100% {
-    box-shadow: 0 0 5px rgba(255, 0, 0, 0.637), 0 0 20px rgba(255, 0, 0, 0.637), 0 0 40px rgba(255, 0, 0, 0.637);
+    box-shadow: 0 0 5px rgba(0, 255, 0, 0.637), 0 0 20px rgba(0, 255, 0, 0.637), 0 0 40px rgba(0, 255, 0, 0.637);
     opacity: 1;
   }
 }
